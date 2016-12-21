@@ -157,15 +157,12 @@ kmodes_input_t read_data(const char *file) {
 
       uint64_t z =  strtoul64(subbuff);
       sequence_t seq = {  x, y , z };
-      print_sequence(seq);
-      printf("\n");
       data[current_line] = seq;
       current_line++;
     } else if (current_line + 1 < data_size) {
       printf("Error parsing line: %zu\n", current_line);
     }
   }
-  exit(0);
 
   printf("Finish read input file\n");
   fclose(in);
