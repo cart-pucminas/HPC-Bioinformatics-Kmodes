@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "kmeans:kmeans.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "omp_distances[0]">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = "read_data:io.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "line">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+      <ContextState
+         contextName = ".omp_microtask.:kmeans.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "threadId">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>

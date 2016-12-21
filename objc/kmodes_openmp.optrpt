@@ -1,0 +1,96 @@
+Intel(R) Advisor can now assist with vectorization and show optimization
+  report messages with your source code.
+See "https://software.intel.com/en-us/intel-advisor-xe" for details.
+
+
+    Report from: Interprocedural optimizations [ipo]
+
+INLINING OPTION VALUES:
+  -inline-factor: 100
+  -inline-min-size: 30
+  -inline-max-size: 230
+  -inline-max-total-size: 2000
+  -inline-max-per-routine: disabled
+  -inline-max-per-compile: disabled
+
+
+Begin optimization report for: kmodes(kmodes_input_t)
+
+    Report from: Interprocedural optimizations [ipo]
+
+INLINE REPORT: (kmodes(kmodes_input_t)) [2] src/kmodes_openmp.c(29,46)
+  -> INLINE: (117,36) maskForMode(unsigned int, unsigned int, unsigned int, unsigned int)
+  -> INLINE: (119,18) maskForMode(unsigned int, unsigned int, unsigned int, unsigned int)
+  -> INLINE: (121,18) maskForMode(unsigned int, unsigned int, unsigned int, unsigned int)
+
+
+    Report from: OpenMP optimizations [openmp]
+
+src/kmodes_openmp.c(79:11-79:11):OMP:kmodes:  OpenMP multithreaded code generation for ATOMIC was successful
+
+    Report from: Offload optimizations [offload]
+
+OFFLOAD:kmodes(39,3):  Offload to target MIC <expr>
+ Data sent from host to target
+       data, pointer to data with element count specified in pragma
+       clusters, scalar size 8 bytes
+       data_size, scalar size 8 bytes
+ Data received by host from target
+       centroids, pointer to data with element count specified in pragma
+       label, pointer to data with element count specified in pragma
+       clusters, scalar size 8 bytes
+       data_size, scalar size 8 bytes
+
+===========================================================================
+Intel(R) Advisor can now assist with vectorization and show optimization
+  report messages with your source code.
+See "https://software.intel.com/en-us/intel-advisor-xe" for details.
+
+
+    Report from: Interprocedural optimizations [ipo]
+
+INLINING OPTION VALUES:
+  -inline-factor: 100
+  -inline-min-size: 30
+  -inline-max-size: 230
+  -inline-max-total-size: 2000
+  -inline-max-per-routine: disabled
+  -inline-max-per-compile: disabled
+
+
+*MIC* Begin optimization report for: maskForMode(unsigned int, unsigned int, unsigned int, unsigned int)
+
+    Report from: Interprocedural optimizations [ipo]
+
+INLINE REPORT: (maskForMode(unsigned int, unsigned int, unsigned int, unsigned int)) [1] src/kmodes_openmp.c(8,122)
+
+===========================================================================
+
+*MIC* Begin optimization report for: kmodes(kmodes_input_t)
+
+    Report from: Interprocedural optimizations [ipo]
+
+INLINE REPORT: (kmodes(kmodes_input_t)) [2] src/kmodes_openmp.c(29,46)
+  -> (117,36) maskForMode(unsigned int, unsigned int, unsigned int, unsigned int)
+  -> (119,18) maskForMode(unsigned int, unsigned int, unsigned int, unsigned int)
+  -> (121,18) maskForMode(unsigned int, unsigned int, unsigned int, unsigned int)
+
+
+    Report from: OpenMP optimizations [openmp]
+
+src/kmodes_openmp.c(79:11-79:11):OMP:kmodes:  OpenMP multithreaded code generation for ATOMIC was successful
+
+    Report from: Offload optimizations [offload]
+
+OFFLOAD:kmodes(39,3):  Outlined offload region
+ Data received by target from host
+       data, pointer to data with element count specified in pragma
+       clusters, scalar size 8 bytes
+       data_size, scalar size 8 bytes
+ Data sent from target to host
+       centroids, pointer to data with element count specified in pragma
+       label, pointer to data with element count specified in pragma
+       clusters, scalar size 8 bytes
+       data_size, scalar size 8 bytes
+
+===========================================================================

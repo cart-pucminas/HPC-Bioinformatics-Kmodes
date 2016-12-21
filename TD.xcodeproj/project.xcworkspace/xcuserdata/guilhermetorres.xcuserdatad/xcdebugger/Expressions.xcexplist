@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<VariablesViewState
+   version = "1.0">
+   <ContextStates>
+      <ContextState
+         contextName = "kmeans:kmeans.c">
+         <PersistentStrings>
+            <PersistentString
+               value = "count[i]">
+            </PersistentString>
+            <PersistentString
+               value = "send_label[i]">
+            </PersistentString>
+            <PersistentString
+               value = "tmp_centroid[29 + 64]">
+            </PersistentString>
+            <PersistentString
+               value = "nearest">
+            </PersistentString>
+         </PersistentStrings>
+      </ContextState>
+   </ContextStates>
+</VariablesViewState>
