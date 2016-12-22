@@ -85,7 +85,7 @@ kmodes_result_t kmodes(kmodes_input_t input) {
       min_distance = UINT_MAX;
       nearest = -1;
 
-// 	  logDistanceSequence(data[i]);
+	    // logDistanceSequence(data[i]);
 
 
       for(size_t j = 0;j < clusters;j++) {
@@ -96,7 +96,6 @@ kmodes_result_t kmodes(kmodes_input_t input) {
         }
         // logDistanceFromCluster(centroids[j], j, distance);
       }
-
 
 
       if(label[i] != nearest) {

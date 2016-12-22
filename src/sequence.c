@@ -36,10 +36,10 @@ __OFFLOAD__MODIFIER__ void print_sequence(sequence_t seq)
 }
 
 __OFFLOAD__MODIFIER__ int dist_sequence(sequence_t seq1,sequence_t seq2){
-  unsigned long int xDiff = seq1.x ^ seq2.x;
-  unsigned long int yDiff = seq1.y ^ seq2.y;
-  unsigned long int zDiff = seq1.z ^ seq2.z;
-  return __builtin_popcountl(xDiff) + __builtin_popcountl(yDiff) + __builtin_popcountl(zDiff);
+  uint64_t xDiff = seq1.x ^ seq2.x;
+  uint64_t yDiff = seq1.y ^ seq2.y;
+  uint64_t zDiff = seq1.z ^ seq2.z;
+  return __builtin_popcountll(xDiff) + __builtin_popcountll(yDiff) + __builtin_popcountll(zDiff);
 }
 
 __OFFLOAD__MODIFIER__ sequence_t copy_sequence(sequence_t seq) {
