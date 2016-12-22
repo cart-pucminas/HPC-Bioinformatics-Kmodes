@@ -39,7 +39,7 @@ unsigned char base_for_binary(unsigned char b) {
  */
 __OFFLOAD__MODIFIER__ void create_readable_string_for_last_part(char *str, uint64_t sequence_part)
 {
-  char *ptr = &sequence_part;
+  char *ptr = (char*)&sequence_part;
   unsigned char *b = (unsigned char*) ptr;
   size_t size = sizeof(uint32_t); // only half of the bits will be used on Z
   // remove characteristic bits
@@ -50,27 +50,22 @@ __OFFLOAD__MODIFIER__ void create_readable_string_for_last_part(char *str, uint6
   for (int i=size;i > 0;i--)
   {
     byte = b[i] >> 4;
-    *str = base_for_binary(byte);
-    *str++;
+    *str++ = base_for_binary(byte);
     byte = b[i] &= 0xf;
-    *str = base_for_binary(byte);
-    *str++;
+    *str++ = base_for_binary(byte);
   }
-  *str = ' ', *str++;
+  *str++ = ' ';
 
   byte = threeLast >> 0b1000;
-  *str = byte == 1 ? '1' : '0';
-  *str++;
+  *str++ = byte == 1 ? '1' : '0';
 
   byte = (threeLast >> 0b0100) & 0xF;
-  *str = byte == 1 ? '1' : '0';
-  *str++;
+  *str++ = byte == 1 ? '1' : '0';
 
   byte = threeLast & 0xF;
-  *str = byte == 1 ? '1' : '0';
-  *str++;
+  *str++ = byte == 1 ? '1' : '0';
 
-  *str = NULL;
+  *str++ = 0;
 }
 
 /**
@@ -79,7 +74,7 @@ __OFFLOAD__MODIFIER__ void create_readable_string_for_last_part(char *str, uint6
  * @return The pointer to the last char added to the string
  */
 char * __OFFLOAD__MODIFIER__ create_readable_string(char *str, uint64_t sequence_part) {
-  char *ptr = &sequence_part;
+  char *ptr = (char*)&sequence_part;
   unsigned char *b = (unsigned char*) ptr;
   unsigned char byte;
   size_t size = sizeof(uint64_t);
@@ -87,14 +82,12 @@ char * __OFFLOAD__MODIFIER__ create_readable_string(char *str, uint64_t sequence
   for (int i = size-1; i >= 0; i--)
   {
     byte = b[i] >> 4;
-    *str = base_for_binary(byte);
-    *str++;
+    *str++ = base_for_binary(byte);
+
     byte = b[i] &= 0xf;
-    *str = base_for_binary(byte);
-    *str++;
+    *str++ = base_for_binary(byte);
   }
-  *str = ' ';
-  *str++;
+  *str++ = ' ';
   return str++;
 
 }

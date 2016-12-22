@@ -42,6 +42,45 @@ void appendCharacterist(char *buffer, char characterist) {
   }
 }
 
+/**
+ * Parse an binary string (100010000100) into a sequence
+ * @param binary_string the string to be parsed
+ * @return the parsed sequence
+ */
+sequence_t parse_sequence(const char * binary_string) {
+  char subbuff[65];
+
+  memset(subbuff, '\0', 65);
+  memcpy(subbuff, &binary_string[0], 64);
+  uint64_t x = binary_str_to_64_integer(subbuff);
+
+  memset(subbuff, '\0', 65);
+  memcpy(subbuff, &binary_string[64], 64);
+  uint64_t y =  binary_str_to_64_integer(subbuff);
+
+  memset(subbuff, '\0', 65);
+  memcpy(subbuff, &binary_string[128], strlen(binary_string) - 128);
+
+  subbuff[strcspn(subbuff, "\n")] = 0; // strip out \n
+
+  char characteristic3 = subbuff[strlen(subbuff)-1];
+  char characteristic2 = subbuff[strlen(subbuff)-1];
+  char characteristic1 = subbuff[strlen(subbuff)-1];
+
+  subbuff[strlen(subbuff)-1] = 0;
+  subbuff[strlen(subbuff)-1] = 0;
+  subbuff[strlen(subbuff)-1] = 0;
+
+  appendCharacterist(subbuff, characteristic1);
+  appendCharacterist(subbuff, characteristic2);
+  appendCharacterist(subbuff, characteristic3);
+
+  uint64_t z =  binary_str_to_64_integer(subbuff);
+
+  sequence_t seq = {  x, y , z };
+  return seq;
+}
+
 kmodes_input_t read_data(const char *file) {
   size_t line_size = 255;
   char line[line_size];
@@ -58,53 +97,22 @@ kmodes_input_t read_data(const char *file) {
   size_t data_size = 0;
   rewind(in);
 
-  while(fgets(&line,&line_size,in) != NULL) {
+  while(fgets(line, line_size, in) != NULL) {
     if(strlen(line) > 1) {
       data_size++;
     }
   }
 
-  printf("Number of lines = %lu\n", data_size);
+  printf("Number of lines = %zu\n", data_size);
 
   //Read objects
   sequence_t *data = (sequence_t*)calloc(data_size, sizeof(sequence_t));
   rewind(in);
 
   size_t current_line = 0;
-  while(fgets(&line,&line_size,in) != NULL) {
+  while(fgets(line, line_size, in) != NULL) {
     if(strlen(line) > 1) {
-
-      char subbuff[65];
-
-      memset(subbuff, '\0', 65);
-      memcpy(subbuff, &line[0], 64);
-      uint64_t x = binary_str_to_64_integer(subbuff);
-
-      memset(subbuff, '\0', 65);
-      memcpy(subbuff, &line[64], 64);
-      uint64_t y =  binary_str_to_64_integer(subbuff);
-
-      memset(subbuff, '\0', 65);
-      memcpy(subbuff, &line[128], strlen(line) - 128);
-
-      subbuff[strcspn(subbuff, "\n")] = 0; // strip out \n
-
-      char charecterist3 = subbuff[strlen(subbuff)-1];
-      char charecterist2 = subbuff[strlen(subbuff)-1];
-      char charecterist1 = subbuff[strlen(subbuff)-1];
-
-      subbuff[strlen(subbuff)-1] = 0;
-      subbuff[strlen(subbuff)-1] = 0;
-      subbuff[strlen(subbuff)-1] = 0;
-
-      appendCharacterist(subbuff, charecterist1);
-      appendCharacterist(subbuff, charecterist2);
-      appendCharacterist(subbuff, charecterist3);
-
-      uint64_t z =  binary_str_to_64_integer(subbuff);
-
-      sequence_t seq = {  x, y , z };
-      data[current_line] = seq;
+      data[current_line] = parse_sequence(line);
       current_line++;
     } else if (current_line + 1 < data_size) {
       printf("Error parsing line: %zu\n", current_line);
