@@ -12,9 +12,9 @@
 
 #define BIT_SIZE_OF(x) (sizeof(x) * 8)
 
-#define DEBUG 1
+#define DEBUG 0
 #define BINARY_OUT 0
-// 
+//
 // extern sequence_t *data;
 // extern int *label;
 // extern size_t data_size;

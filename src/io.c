@@ -17,7 +17,7 @@ unsigned char baseForBinary(unsigned char b){
   return 'g';
   if (b == 8)
   return 't';
-  assert(1); // no expected
+  assert(1);
   return '\0';
 }
 void printBits(FILE *out,void const * const ptr)
@@ -86,11 +86,26 @@ uint64_t strtoul64(char *s) {
   return total;
 }
 
+
+/**
+ * Append a characterist using k-modes format to the buffer
+ * Buffer the null terminate string that will have the characterist append
+ * @param characterist char '1' or '0'
+ * @return A null terminate string with the append characterist in kmodes format
+ *         0010 if characterist is '0' and 0001 if charecterist is '1'
+ */
+void appendCharacterist(char *buffer, char characterist) {
+  if (characterist == '1') {
+    strcat(buffer, "0001");
+  } else {
+    strcat(buffer, "0010");
+  }
+}
+
 kmodes_input_t read_data(const char *file) {
   size_t line_size = 255;
-
-  FILE *in = fopen(file,"r");
-  char *line = (char*)calloc(255,sizeof(char));
+  char line[line_size];
+  FILE *in = fopen(file, "r");
 
   if(!in) {
     printf("Invalid file!\n");
@@ -103,10 +118,8 @@ kmodes_input_t read_data(const char *file) {
   size_t data_size = 0;
   rewind(in);
 
-  while(!feof(in)) {
-    int characters = getline(&line,&line_size,in);
-
-    if(characters > 1 && line[0] != '\n') {
+  while(fgets(&line,&line_size,in) != NULL) {
+    if(strlen(line) > 1) {
       data_size++;
     }
   }
@@ -114,17 +127,16 @@ kmodes_input_t read_data(const char *file) {
   printf("Number of lines = %lu\n", data_size);
 
   //Read objects
-  sequence_t *data = (sequence_t*)calloc(data_size,sizeof(sequence_t));
+  sequence_t *data = (sequence_t*)calloc(data_size, sizeof(sequence_t));
   rewind(in);
 
   size_t current_line = 0;
-  while(!feof(in)) {
-    getline(&line,&line_size,in);
+  while(fgets(&line,&line_size,in) != NULL) {
     if(strlen(line) > 1) {
 
       char subbuff[65];
-      memset(subbuff, '\0', 65);
 
+      memset(subbuff, '\0', 65);
       memcpy(subbuff, &line[0], 64);
       uint64_t x = strtoul64(subbuff);
 
@@ -133,29 +145,24 @@ kmodes_input_t read_data(const char *file) {
       uint64_t y =  strtoul64(subbuff);
 
       memset(subbuff, '\0', 65);
-      size_t lastPartSize = strlen(line) - 128 - 1; // -1 for \n
-      memcpy(subbuff, &line[128], lastPartSize -1);
+      memcpy(subbuff, &line[128], strlen(line) - 128);
 
-      char charecterist3 = subbuff[lastPartSize-1];
-      char charecterist2 = subbuff[lastPartSize-2];
-      char charecterist1 = subbuff[lastPartSize-3];
-      if (charecterist3 == 1) {
-        memcpy(&subbuff[lastPartSize - 4], "0001", 4);
-      } else {
-        memcpy(&subbuff[lastPartSize - 4], "0010", 4);
-      }
-      if (charecterist2 == 1) {
-        memcpy(&subbuff[lastPartSize - 8], "0001", 4);
-      } else {
-        memcpy(&subbuff[lastPartSize - 8], "0010", 4);
-      }
-      if (charecterist3 == 1) {
-        memcpy(&subbuff[lastPartSize - 12], "0001", 4);
-      } else {
-        memcpy(&subbuff[lastPartSize - 12], "0010", 4);
-      }
+      subbuff[strcspn(subbuff, "\n")] = 0; // strip out \n
+
+      char charecterist3 = subbuff[strlen(subbuff)-1];
+      char charecterist2 = subbuff[strlen(subbuff)-1];
+      char charecterist1 = subbuff[strlen(subbuff)-1];
+
+      subbuff[strlen(subbuff)-1] = 0;
+      subbuff[strlen(subbuff)-1] = 0;
+      subbuff[strlen(subbuff)-1] = 0;
+
+      appendCharacterist(subbuff, charecterist1);
+      appendCharacterist(subbuff, charecterist2);
+      appendCharacterist(subbuff, charecterist3);
 
       uint64_t z =  strtoul64(subbuff);
+
       sequence_t seq = {  x, y , z };
       data[current_line] = seq;
       current_line++;

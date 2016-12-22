@@ -103,7 +103,7 @@ kmodes_result_t kmodes(kmodes_input_t input) {
         label[i] = nearest;
       }
 
-//       logNearestDistance(nearest, min_distance);
+      // logNearestDistance(nearest, min_distance);
 
 
       unsigned int *tmp_centroid = &tmp_centroidCount[label[i] * BIT_SIZE_OF(sequence_t)];
@@ -157,5 +157,6 @@ kmodes_result_t kmodes(kmodes_input_t input) {
     label,
     centroids
   };
+  free(tmp_centroidCount);
   return result;
 }
