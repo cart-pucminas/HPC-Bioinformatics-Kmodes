@@ -8,75 +8,15 @@
 #include <inttypes.h>
 #include <stdio.h>
 
-unsigned char baseForBinary(unsigned char b){
-  if (b == 1)
-  return 'a';
-  if (b == 2)
-  return 'c';
-  if (b == 4)
-  return 'g';
-  if (b == 8)
-  return 't';
-  assert(1);
-  return '\0';
-}
-void printBits(FILE *out,void const * const ptr)
-{
-  unsigned char *b = (unsigned char*) ptr;
-  size_t size = sizeof(uint64_t);
-  int i;
-  unsigned char byte;
-  for (i=size-1;i>=0;i--)
-  {
-    byte = b[i] >> 4;
-    fprintf(out,"%c", baseForBinary(byte));
-    byte = b[i] &= 0xf;
-    fprintf(out,"%c", baseForBinary(byte));
-  }
-  fputs("",out);
-}
 
-void printSpecialCase(FILE *out,uint64_t *ptr)
-{
-  unsigned char *b = (unsigned char*) ptr;
-  size_t size = sizeof(unsigned int); // only half of the bits will be used on Z
-  int i;
-
-  // remove caracteristic bits
-  uint64_t threeLast = ((*ptr) & 0xFFFUL);
-  *ptr >>= 12;
-
-  unsigned char byte;
-  for (i=size-1;i>=0;i--)
-  {
-    byte = b[i] >> 4;
-    fprintf(out,"%c", baseForBinary(byte));
-    byte = b[i] &= 0xf;
-    fprintf(out,"%c", baseForBinary(byte));
-  }
-  fputs(" ",out);
-  byte = threeLast >> 8;
-  if (byte == 1) {
-    fprintf(out,"%d",1);
-  } else if (byte == 2) {
-    fprintf(out,"%d",0);
-  }
-  byte = (threeLast >> 4) & 0xF;
-  if (byte == 1) {
-    fprintf(out,"%d",1);
-  } else if (byte == 2) {
-    fprintf(out,"%d",0);
-  }
-  byte = threeLast & 0xF;
-  if (byte == 1) {
-    fprintf(out,"%d",1);
-  } else if (byte == 2){
-    fprintf(out,"%d",0);
-  }
-}
-
-uint64_t strtoul64(char *s) {
-  char* start = &s[0];
+/**
+ * An plataform independent version of the strtoul or strtoull
+ * using base 2.
+ * @param binary_string an binary string per example "100010001000"
+ * @return an 64bit interger represented by the string
+ */
+uint64_t binary_str_to_64_integer(char *binary_string) {
+  char* start = &binary_string[0];
   uint64_t total = 0;
   while (*start)
   {
@@ -138,11 +78,11 @@ kmodes_input_t read_data(const char *file) {
 
       memset(subbuff, '\0', 65);
       memcpy(subbuff, &line[0], 64);
-      uint64_t x = strtoul64(subbuff);
+      uint64_t x = binary_str_to_64_integer(subbuff);
 
       memset(subbuff, '\0', 65);
       memcpy(subbuff, &line[64], 64);
-      uint64_t y =  strtoul64(subbuff);
+      uint64_t y =  binary_str_to_64_integer(subbuff);
 
       memset(subbuff, '\0', 65);
       memcpy(subbuff, &line[128], strlen(line) - 128);
@@ -161,7 +101,7 @@ kmodes_input_t read_data(const char *file) {
       appendCharacterist(subbuff, charecterist2);
       appendCharacterist(subbuff, charecterist3);
 
-      uint64_t z =  strtoul64(subbuff);
+      uint64_t z =  binary_str_to_64_integer(subbuff);
 
       sequence_t seq = {  x, y , z };
       data[current_line] = seq;
@@ -217,13 +157,8 @@ void write_nearest_objects(const char *file, kmodes_input_t input, kmodes_result
     if(nearest == -1) {
       nearest = i * input.data_size / input.number_of_clusters;
     }
-
-    printBits(out,&input.data[nearest].x);
-    fprintf(out," ");
-    printBits(out,&input.data[nearest].y);
-    fprintf(out," ");
-    printSpecialCase(out,&input.data[nearest].z);
-    fprintf(out," ");
+    char *sequence_str = to_human_readble_string(input.data[nearest]);
+    fprintf(out,"%s ", sequence_str);
     fprintf(out,"\n");
   }
 

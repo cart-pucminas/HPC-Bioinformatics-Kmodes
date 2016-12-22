@@ -34,6 +34,8 @@
 
 #define SEQ_DIM_BITS_SIZE sizeof(uint64_t) * 8
 
+__OFFLOAD__MODIFIER__ char* to_human_readble_string(sequence_t seq);
+
 __OFFLOAD__MODIFIER__ void print_sequence(sequence_t seq);
 
 __OFFLOAD__MODIFIER__ int dist_sequence(sequence_t seq1,sequence_t seq2);

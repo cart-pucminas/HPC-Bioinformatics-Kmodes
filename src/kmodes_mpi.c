@@ -215,12 +215,15 @@ kmodes_result_t kmodes(kmodes_input_t input) {
     MPI_Allreduce(&delta,&recv_delta,1,MPI_LONG,MPI_SUM,MPI_COMM_WORLD);
     delta = recv_delta;
 
+    free(local_centroids);
     if (mpi_rank == 0) {
       printf ("%d - delta = %ld\n",pc,delta);
     }
     pc++;
 
   } while(delta > 0);
+  free(tmp_centroidCount);
+  free(recv_tmp_centroidCount);
   kmodes_result_t result = {
     label,
     centroids,
