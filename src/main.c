@@ -90,7 +90,8 @@ int main(int argc,char **argv) {
   MPI_Finalize();
   #endif
   #if EMMC_POWER_MEASUREMENT
-  double power = power_end();
+  double power = 0;
+  master_only(power = power_end());
   safe_print("power measured: %f\n", power);
   #endif
 
