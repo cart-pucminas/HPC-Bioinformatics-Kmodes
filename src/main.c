@@ -10,17 +10,14 @@ int mpi_rank;
 int mpi_size;
 
 void execute(char *filename, size_t number_of_clusters) {
-
-  #if USE_MPI
-  FILE *log_file;
-  char logfile[255];
-  double begin = MPI_Wtime();
-  //Open Log file
-  if(mpi_rank == 0){
-    sprintf(logfile,"%s.log",filename);
-    log_file = fopen(logfile,"w");
-  }
+  #if !USE_MPI
+    int mpi_rank = 0;
   #endif
+
+  if (mpi_rank == 0) {
+    printf("Input file: %s\n", filename);
+  }
+
   //Execute processing
 
   kmodes_input_t input = read_data(filename);
@@ -30,7 +27,9 @@ void execute(char *filename, size_t number_of_clusters) {
   kmodes_result_t result = kmodes(input);
   clock_t end = clock();
   double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-  printf("Excution time: %f seconds\n\n", time_spent);
+  if (mpi_rank == 0) {
+    printf("Excution time: %f seconds\n\n", time_spent);
+  }
 
   char resultFile[255];
   sprintf(resultFile, "%s.out", filename);
@@ -40,13 +39,6 @@ void execute(char *filename, size_t number_of_clusters) {
   free(result.labels);
   free(result.centroids);
 
-  #if USE_MPI
-  if(mpi_rank == 0) {
-    double end = MPI_Wtime();
-    fprintf(log_file,"---\n%f",end-begin);
-    fclose(log_file);
-  }
-  #endif
 }
 
 void init_mpi(int argc,char **argv){
