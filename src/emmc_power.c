@@ -214,6 +214,8 @@ void power_init()
 double power_end(void)
 {
     live = 0;
+    avg = 0;
+    count = 0;
     pthread_join(tid, NULL);
     return (avg);
 }

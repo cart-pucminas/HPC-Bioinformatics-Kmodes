@@ -71,7 +71,7 @@ void logAddSquenceToGroup(int sequenceIndex, int cluster, const unsigned int* ce
 
 
 kmodes_result_t kmodes(kmodes_input_t input) {
-  printf("Starting kmeans mpi\n");
+  safe_print("Starting kmeans mpi\n");
 
   size_t clusters = input.number_of_clusters;
   size_t data_size = input.data_size;
@@ -93,7 +93,7 @@ kmodes_result_t kmodes(kmodes_input_t input) {
   int pc = 0;
   long delta = 0;
   int omp_threads_count = omp_get_max_threads();
-  printf("Number of OMP threads = %d\n",omp_threads_count);
+  printf("Number of OMP threads = %d in rank = %d\n",omp_threads_count, mpi_rank);
   do {
 
     delta = 0; //Number of objects has diverged in current iteration
@@ -217,7 +217,7 @@ kmodes_result_t kmodes(kmodes_input_t input) {
 
     free(local_centroids);
     if (mpi_rank == 0) {
-      printf ("%d - delta = %ld\n",pc,delta);
+      safe_print ("%d - delta = %ld\n",pc,delta);
     }
     pc++;
 

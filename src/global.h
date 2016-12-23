@@ -1,6 +1,8 @@
 #ifndef _GLOBAL_
 #define _GLOBAL_
 
+#define safe_print(...) if (mpi_rank == 0) printf(__VA_ARGS__)
+#define master_only(command) if (mpi_rank == 0) { command; };
 
 #include <stdio.h>
 #include <stdlib.h>

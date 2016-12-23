@@ -90,7 +90,7 @@ kmodes_input_t read_data(const char *file) {
     printf("Invalid file!\n");
     exit(0);
   } else {
-    printf("Reading file %s\n", file);
+    safe_print("Reading file %s\n", file);
   }
 
   //Count lines
@@ -103,7 +103,7 @@ kmodes_input_t read_data(const char *file) {
     }
   }
 
-  printf("Number of lines = %zu\n", data_size);
+  safe_print("Number of lines = %zu\n", data_size);
 
   //Read objects
   sequence_t *data = (sequence_t*)calloc(data_size, sizeof(sequence_t));
@@ -119,7 +119,7 @@ kmodes_input_t read_data(const char *file) {
     }
   }
 
-  printf("Finish read input file\n");
+  safe_print("Finish read input file\n");
   fclose(in);
   kmodes_input_t input = { data, data_size, 0 };
   return input;
