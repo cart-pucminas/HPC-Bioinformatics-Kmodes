@@ -37,8 +37,8 @@ void execute(char *filename, size_t number_of_clusters) {
     sprintf(resultFile, "%s.out", filename);
     write_nearest_objects(resultFile, input, result);
     #if EMMC_POWER_MEASUREMENT
-    int power = power_end();
-	  printf("power measured: %f\n", power*0.000001);
+    double power = power_end();
+	  printf("power measured: %f\n", power);
     #endif
   }
 
