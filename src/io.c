@@ -87,7 +87,7 @@ kmodes_input_t read_data(const char *file) {
   FILE *in = fopen(file, "r");
 
   if(!in) {
-    printf("Invalid file!\n");
+    printf("Invalid file: %s \n", file);
     exit(0);
   } else {
     safe_print("Reading file %s\n", file);
