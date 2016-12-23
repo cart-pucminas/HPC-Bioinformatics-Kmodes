@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include "global.h"
 #include "io.h"
 
@@ -24,7 +25,12 @@ void execute(char *filename, size_t number_of_clusters) {
 
   kmodes_input_t input = read_data(filename);
   input.number_of_clusters = number_of_clusters;
+
+  clock_t begin = clock();
   kmodes_result_t result = kmodes(input);
+  clock_t end = clock();
+  double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+  printf("Excution time: %f seconds\n\n", time_spent);
 
   char resultFile[255];
   sprintf(resultFile, "%s.out", filename);
