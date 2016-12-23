@@ -4,6 +4,7 @@
 #include <time.h>
 #include "global.h"
 #include "io.h"
+#include "power.h"
 
 
 int mpi_rank;
@@ -16,6 +17,9 @@ void execute(char *filename, size_t number_of_clusters) {
 
   if (mpi_rank == 0) {
     printf("Input file: %s\n", filename);
+    #if EMMC_POWER_MEASUREMENT
+    power_init();
+    #endif
   }
 
   //Execute processing
@@ -29,11 +33,14 @@ void execute(char *filename, size_t number_of_clusters) {
   double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
   if (mpi_rank == 0) {
     printf("Excution time: %f seconds\n\n", time_spent);
+    char resultFile[255];
+    sprintf(resultFile, "%s.out", filename);
+    write_nearest_objects(resultFile, input, result);
+    #if EMMC_POWER_MEASUREMENT
+    int power = power_end();
+	  printf("power measured: %f\n", power*0.000001);
+    #endif
   }
-
-  char resultFile[255];
-  sprintf(resultFile, "%s.out", filename);
-  write_nearest_objects(resultFile, input, result);
 
   free(input.data);
   free(result.labels);
