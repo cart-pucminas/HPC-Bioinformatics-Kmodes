@@ -17,7 +17,7 @@
  * g = 0100
  * t = 1000
  */
-unsigned char base_for_binary(unsigned char b) {
+__OFFLOAD__MODIFIER__ unsigned char base_for_binary(unsigned char b) {
   if (b == 0b0001)
   return 'a';
   if (b == 0b0010)
