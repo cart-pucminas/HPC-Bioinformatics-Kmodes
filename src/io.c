@@ -8,75 +8,15 @@
 #include <inttypes.h>
 #include <stdio.h>
 
-unsigned char baseForBinary(unsigned char b){
-  if (b == 1)
-  return 'a';
-  if (b == 2)
-  return 'c';
-  if (b == 4)
-  return 'g';
-  if (b == 8)
-  return 't';
-  assert(1); // no expected
-  return '\0';
-}
-void printBits(FILE *out,void const * const ptr)
-{
-  unsigned char *b = (unsigned char*) ptr;
-  size_t size = sizeof(uint64_t);
-  int i;
-  unsigned char byte;
-  for (i=size-1;i>=0;i--)
-  {
-    byte = b[i] >> 4;
-    fprintf(out,"%c", baseForBinary(byte));
-    byte = b[i] &= 0xf;
-    fprintf(out,"%c", baseForBinary(byte));
-  }
-  fputs("",out);
-}
 
-void printSpecialCase(FILE *out,uint64_t *ptr)
-{
-  unsigned char *b = (unsigned char*) ptr;
-  size_t size = sizeof(unsigned int); // only half of the bits will be used on Z
-  int i;
-
-  // remove caracteristic bits
-  uint64_t threeLast = ((*ptr) & 0xFFFUL);
-  *ptr >>= 12;
-
-  unsigned char byte;
-  for (i=size-1;i>=0;i--)
-  {
-    byte = b[i] >> 4;
-    fprintf(out,"%c", baseForBinary(byte));
-    byte = b[i] &= 0xf;
-    fprintf(out,"%c", baseForBinary(byte));
-  }
-  fputs(" ",out);
-  byte = threeLast >> 8;
-  if (byte == 1) {
-    fprintf(out,"%d",1);
-  } else if (byte == 2) {
-    fprintf(out,"%d",0);
-  }
-  byte = (threeLast >> 4) & 0xF;
-  if (byte == 1) {
-    fprintf(out,"%d",1);
-  } else if (byte == 2) {
-    fprintf(out,"%d",0);
-  }
-  byte = threeLast & 0xF;
-  if (byte == 1) {
-    fprintf(out,"%d",1);
-  } else if (byte == 2){
-    fprintf(out,"%d",0);
-  }
-}
-
-uint64_t strtoul64(char *s) {
-  char* start = &s[0];
+/**
+ * An plataform independent version of the strtoul or strtoull
+ * using base 2.
+ * @param binary_string an binary string per example "100010001000"
+ * @return an 64bit interger represented by the string
+ */
+uint64_t binary_str_to_64_integer(char *binary_string) {
+  char* start = &binary_string[0];
   uint64_t total = 0;
   while (*start)
   {
@@ -86,85 +26,100 @@ uint64_t strtoul64(char *s) {
   return total;
 }
 
+
+/**
+ * Append a characterist using k-modes format to the buffer
+ * Buffer the null terminate string that will have the characterist append
+ * @param characterist char '1' or '0'
+ * @return A null terminate string with the append characterist in kmodes format
+ *         0010 if characterist is '0' and 0001 if charecterist is '1'
+ */
+void appendCharacterist(char *buffer, char characterist) {
+  if (characterist == '1') {
+    strcat(buffer, "0001");
+  } else {
+    strcat(buffer, "0010");
+  }
+}
+
+/**
+ * Parse an binary string (100010000100) into a sequence
+ * @param binary_string the string to be parsed
+ * @return the parsed sequence
+ */
+sequence_t parse_sequence(const char * binary_string) {
+  char subbuff[65];
+
+  memset(subbuff, '\0', 65);
+  memcpy(subbuff, &binary_string[0], 64);
+  uint64_t x = binary_str_to_64_integer(subbuff);
+
+  memset(subbuff, '\0', 65);
+  memcpy(subbuff, &binary_string[64], 64);
+  uint64_t y =  binary_str_to_64_integer(subbuff);
+
+  memset(subbuff, '\0', 65);
+  memcpy(subbuff, &binary_string[128], strlen(binary_string) - 128);
+
+  subbuff[strcspn(subbuff, "\n")] = 0; // strip out \n
+
+  char characteristic3 = subbuff[strlen(subbuff)-1];
+  char characteristic2 = subbuff[strlen(subbuff)-1];
+  char characteristic1 = subbuff[strlen(subbuff)-1];
+
+  subbuff[strlen(subbuff)-1] = 0;
+  subbuff[strlen(subbuff)-1] = 0;
+  subbuff[strlen(subbuff)-1] = 0;
+
+  appendCharacterist(subbuff, characteristic1);
+  appendCharacterist(subbuff, characteristic2);
+  appendCharacterist(subbuff, characteristic3);
+
+  uint64_t z =  binary_str_to_64_integer(subbuff);
+
+  sequence_t seq = {  x, y , z };
+  return seq;
+}
+
 kmodes_input_t read_data(const char *file) {
   size_t line_size = 255;
-
-  FILE *in = fopen(file,"r");
-  char *line = (char*)calloc(255,sizeof(char));
+  char line[line_size];
+  FILE *in = fopen(file, "r");
 
   if(!in) {
-    printf("Invalid file!\n");
+    printf("Invalid file: %s \n", file);
     exit(0);
   } else {
-    printf("Reading file %s\n", file);
+    safe_print("Reading file %s\n", file);
   }
 
   //Count lines
   size_t data_size = 0;
   rewind(in);
 
-  while(!feof(in)) {
-    int characters = getline(&line,&line_size,in);
-
-    if(characters > 1 && line[0] != '\n') {
+  while(fgets(line, line_size, in) != NULL) {
+    if(strlen(line) > 1) {
       data_size++;
     }
   }
 
-  printf("Number of lines = %lu\n", data_size);
+  safe_print("Number of lines = %zu\n", data_size);
 
   //Read objects
-  sequence_t *data = (sequence_t*)calloc(data_size,sizeof(sequence_t));
+  sequence_t *data = (sequence_t*)calloc(data_size, sizeof(sequence_t));
   rewind(in);
 
   size_t current_line = 0;
-  while(!feof(in)) {
-    getline(&line,&line_size,in);
+  while(fgets(line, line_size, in) != NULL) {
     if(strlen(line) > 1) {
-
-      char subbuff[65];
-      memset(subbuff, '\0', 65);
-
-      memcpy(subbuff, &line[0], 64);
-      uint64_t x = strtoul64(subbuff);
-
-      memset(subbuff, '\0', 65);
-      memcpy(subbuff, &line[64], 64);
-      uint64_t y =  strtoul64(subbuff);
-
-      memset(subbuff, '\0', 65);
-      size_t lastPartSize = strlen(line) - 128 - 1; // -1 for \n
-      memcpy(subbuff, &line[128], lastPartSize -1);
-
-      char charecterist3 = subbuff[lastPartSize-1];
-      char charecterist2 = subbuff[lastPartSize-2];
-      char charecterist1 = subbuff[lastPartSize-3];
-      if (charecterist3 == 1) {
-        memcpy(&subbuff[lastPartSize - 4], "0001", 4);
-      } else {
-        memcpy(&subbuff[lastPartSize - 4], "0010", 4);
-      }
-      if (charecterist2 == 1) {
-        memcpy(&subbuff[lastPartSize - 8], "0001", 4);
-      } else {
-        memcpy(&subbuff[lastPartSize - 8], "0010", 4);
-      }
-      if (charecterist3 == 1) {
-        memcpy(&subbuff[lastPartSize - 12], "0001", 4);
-      } else {
-        memcpy(&subbuff[lastPartSize - 12], "0010", 4);
-      }
-
-      uint64_t z =  strtoul64(subbuff);
-      sequence_t seq = {  x, y , z };
-      data[current_line] = seq;
+      data[current_line] = parse_sequence(line);
       current_line++;
     } else if (current_line + 1 < data_size) {
       printf("Error parsing line: %zu\n", current_line);
     }
   }
 
-  printf("Finish read input file\n");
+  safe_print("Finish read input file\n");
   fclose(in);
   kmodes_input_t input = { data, data_size, 0 };
   return input;
@@ -210,13 +165,8 @@ void write_nearest_objects(const char *file, kmodes_input_t input, kmodes_result
     if(nearest == -1) {
       nearest = i * input.data_size / input.number_of_clusters;
     }
-
-    printBits(out,&input.data[nearest].x);
-    fprintf(out," ");
-    printBits(out,&input.data[nearest].y);
-    fprintf(out," ");
-    printSpecialCase(out,&input.data[nearest].z);
-    fprintf(out," ");
+    char *sequence_str = to_human_readble_string(input.data[nearest]);
+    fprintf(out,"%s ", sequence_str);
     fprintf(out,"\n");
   }
 

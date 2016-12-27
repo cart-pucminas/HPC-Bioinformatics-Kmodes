@@ -13,31 +13,6 @@
 static size_t const sequence_part1_size = sizeof(uint64_t) * 8;
 static size_t const sequence_part2_size = sequence_part1_size * 2;
 
-__OFFLOAD__MODIFIER__ inline void create_binary_string(void const * const ptr, char *str) {
-  unsigned char *b = (unsigned char*) ptr;
-  unsigned char byte;
-  size_t size = sizeof(unsigned long int);
-  size_t count = 0;
-
-  for (sizet_t i = size-1; i >= 0; i--)
-  {
-    for (sizet_t j=7; j >= 0; j--)
-    {
-      byte = b[i] & (1<<j);
-      byte >>= j;
-      str[count] = byte +'0';
-      count++;
-    }
-  }
-}
-
-__OFFLOAD__MODIFIER__ inline char* to_string(sequence_t seq) {
-  const char* string = (char *) malloc(sizeof(sequence_t) * 8);
-  create_binary_string(string, &seq.x);
-  create_binary_string(&string[sequence_part1_size], &seq.y);
-  create_binary_string(&string[sequence_part2_size], &seq.z);
-  return string;
-}
 
 __OFFLOAD__MODIFIER__ inline void print_sequence(sequence_t seq) {
   const char* string = to_string(seq);

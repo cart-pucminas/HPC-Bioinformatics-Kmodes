@@ -31,10 +31,10 @@ all: kmodes kmodes_cuda kmodes_mpi kmodes_openmp
 kmodes_cuda: kmodes sequence_cuda
 	${CUDAC} -c ${CUDA_FLAGS}  objc/$@.o  src/$@.cu --shared
 	${CUDAC} ${CUDA_FLAGS} bin/kmodes-cuda objc/$@.o objc/sequence_cuda.o objc/io.o objc/main.o
-kmodes_mpi: kmodes power
+kmodes_mpi: kmodes emmc_power
 	${MPIC} -c -fopenmp $(MPI_FLAGS) -lmpi  ${COMPILE_FLAGS} objc/$@.o src/$@.c
-	${MPIC} -c -fopenmp $(MPI_FLAGS) -lmpi  ${COMPILE_FLAGS} objc/main_mpi.o src/main.c -D USE_MPI
-	${MPIC} -fopenmp $(MPI_FLAGS) -lmpi  ${LINK_FLAGS} -o bin/kmodes-mpi objc/power.o objc/$@.o objc/main_mpi.o ${BASE_OBJC}
+	${MPIC} -c -fopenmp $(MPI_FLAGS) -lmpi  ${COMPILE_FLAGS} objc/main_mpi.o src/main.c -D USE_MPI -D EMMC_POWER_MEASUREMENT
+	${MPIC} -fopenmp $(MPI_FLAGS) -lmpi  ${LINK_FLAGS} -o bin/kmodes-mpi objc/emmc_power.o objc/$@.o objc/main_mpi.o ${BASE_OBJC}
 kmodes_openmp: kmodes power
 	${ICC} -c src/$@.c -qopt-report -fopenmp $(COMPILE_FLAGS) objc/$@.o
 	${ICC} -c src/sequence.c $(COMPILE_FLAGS) objc/sequence_icc.o
@@ -42,6 +42,8 @@ kmodes_openmp: kmodes power
 kmodes: create_objc_dir main io sequence
 	${CC} -c src/$@.c ${COMPILE_FLAGS} objc/$@.o
 	${CC} -o bin/kmodes objc/kmodes.o ${OBJC}
+emmc_power:
+	${CC} -c src/$@.c -pthread ${COMPILE_FLAGS} objc/$@.o
 power:
 	${CC} -c src/$@.c -pthread ${COMPILE_FLAGS} objc/$@.o
 sequence_cuda:

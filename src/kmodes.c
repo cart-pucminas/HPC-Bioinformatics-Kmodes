@@ -85,7 +85,7 @@ kmodes_result_t kmodes(kmodes_input_t input) {
       min_distance = UINT_MAX;
       nearest = -1;
 
-// 	  logDistanceSequence(data[i]);
+	    // logDistanceSequence(data[i]);
 
 
       for(size_t j = 0;j < clusters;j++) {
@@ -98,13 +98,12 @@ kmodes_result_t kmodes(kmodes_input_t input) {
       }
 
 
-
       if(label[i] != nearest) {
         delta++;
         label[i] = nearest;
       }
 
-//       logNearestDistance(nearest, min_distance);
+      // logNearestDistance(nearest, min_distance);
 
 
       unsigned int *tmp_centroid = &tmp_centroidCount[label[i] * BIT_SIZE_OF(sequence_t)];
@@ -158,5 +157,6 @@ kmodes_result_t kmodes(kmodes_input_t input) {
     label,
     centroids
   };
+  free(tmp_centroidCount);
   return result;
 }
