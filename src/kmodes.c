@@ -18,7 +18,7 @@ kmodes_result_t kmodes(kmodes_input_t input) {
   sequence_t *centroids = (sequence_t*)calloc(clusters, sizeof(sequence_t));
   unsigned int *tmp_centroidCount = (unsigned int*)malloc(clusters * BIT_SIZE_OF(sequence_t) * sizeof(unsigned int));
 
-  printf("Data size is %d\n", data_size);
+  printf("Data size is %zu\n", data_size);
 
   memset (label,-1,data_size * sizeof(int));
 

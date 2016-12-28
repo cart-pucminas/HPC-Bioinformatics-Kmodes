@@ -2,7 +2,6 @@
 #define _GLOBAL_
 #include <stdio.h>
 #include <stdlib.h>
-#include "sequence.h"
 
 
 #define safe_print(...) if (mpi_rank == 0) printf(__VA_ARGS__)

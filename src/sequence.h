@@ -11,6 +11,7 @@
 
 #include <stdint.h>
 #include <inttypes.h>
+#include "global.h"
 
 #ifdef __INTEL_COMPILER
   typedef struct ulong3
