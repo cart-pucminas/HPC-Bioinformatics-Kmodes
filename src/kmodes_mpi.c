@@ -1,74 +1,11 @@
-#include "global.h"
-#include "string.h"
-#include "kmodes.h"
-
 #include <limits.h>
 #include <omp.h>
 #include <mpi.h>
 
-unsigned int maskForMode(unsigned int x,unsigned int y,unsigned int z,unsigned int w ){
-  unsigned int max = x > y ? x : y;
-  max = z > max ? z : max;
-  max = w > max ? w : max;
-  unsigned int mask = 0;
-
-  if (max == x){
-    mask |= 1;
-  }
-  if (max == y){
-    mask |= 2; // 010
-  }
-  if (max == z){
-    mask |= 4; // 0100
-  }
-  if (max == w){
-    mask |= 8; // 0100
-  }
-  return mask;
-}
-
-void logDistanceSequence(sequence_t sequence){
-  #if DEBUG
-  printf("Calculating distance for sequence: ");
-  print_sequence(sequence);
-  printf("\n\n");
-  #endif
-}
-
-void logDistanceFromCluster(sequence_t sequence, int cluster, int distance){
-  #if DEBUG
-  printf("Distance from cluster %d\n", cluster);
-  print_sequence(sequence);
-  printf("\n");
-  printf("Distance =: %d\n\n",distance);
-  #endif
-}
-
-void logNearestDistance(int nearest, int min_distance) {
-  #if DEBUG
-  printf("Shortest distance is cluster %d",nearest);
-  printf("\n");
-  printf("Distance = %d\n\n",min_distance);
-  #endif
-}
-
-void logLabel(unsigned int i, int label) {
-  #if DEBUG
-  printf("label[%u] = %d\n",i, label);
-  #endif
-}
-
-void logAddSquenceToGroup(int sequenceIndex, int cluster, const unsigned int* centroid_values){
-  #if DEBUG
-  printf("Added sequence %d to cluster %d \n",sequenceIndex , cluster);
-  printf("Group new values are:\n");
-  for (int j=BIT_SIZE_OF(sequence_t)-1;j>=0; j--) {
-    printf("%d",centroid_values[j]);
-  }
-  printf("\n\n");
-  #endif
-}
-
+#include "global.h"
+#include "string.h"
+#include "kmodes.h"
+#include "kmodes_common.h"
 
 kmodes_result_t kmodes(kmodes_input_t input) {
   safe_print("Starting kmeans mpi\n");

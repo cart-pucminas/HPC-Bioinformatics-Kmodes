@@ -17,17 +17,14 @@
   {
     uint64_t x, y, z;
   } sequence_t;
-  #define __OFFLOAD__MODIFIER__ __attribute__((target(mic)))
 #elif __CUDACC__
   #include <cuda_runtime.h>
   typedef struct ulong3 sequence_t;
-  #define __OFFLOAD__MODIFIER__ __host__ __device__
 #else
   typedef struct ulong3
   {
     uint64_t x, y, z;
   } sequence_t;
-  #define __OFFLOAD__MODIFIER__
 #endif
 
 

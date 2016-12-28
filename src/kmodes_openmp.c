@@ -1,30 +1,11 @@
+#include <string.h>
+#include <limits.h>
+#include <omp.h>
+
 #include "global.h"
-#include "string.h"
 #include "power.h"
-#include "limits.h"
 #include "kmodes.h"
-#include "omp.h"
-
-inline unsigned int __attribute__((target(mic))) maskForMode(unsigned int x,unsigned int y,unsigned int z,unsigned int w){
-  unsigned int max = x > y ? x : y;
-  max = z > max ? z : max;
-  max = w > max ? w : max;
-  unsigned int mask = 0;
-
-  if (max == x){
-    mask |= 1;
-  }
-  if (max == y){
-    mask |= 2; // 010
-  }
-  if (max == z){
-    mask |= 4; // 0100
-  }
-  if (max == w){
-    mask |= 8; // 0100
-  }
-  return mask;
-}
+#include "kmodes_common.h"
 
 kmodes_result_t kmodes(kmodes_input_t input) {
   power_init();

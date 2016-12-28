@@ -12,7 +12,7 @@ export LC_ALL=en_US
 CUDA_HOME?=/Developer/NVIDIA/CUDA-7.5
 
 COMPILE_FLAGS+=${COMMON_FLAGS}
-COMMON_FLAGS=-g -std=c1x -Wall -o
+COMMON_FLAGS=-g -O2 -std=c1x -Wall -o
 CUDA_FLAGS=--ptxas-options=-v -arch=sm_30 -o
 #MPI_FLAGS=-I$(shell mpicc --showme:incdirs) $(addprefix -L,$(shell mpicc --showme:libdirs)) -fopenmp
 MPI_FLAGS= -fopenmp
@@ -23,7 +23,7 @@ CC=gcc
 MPIC=mpicc
 
 BASES = athaliana celegans Rattusnovergicus Musmusculus HomoSapiens gallus Drosophila
-BASE_OBJC = objc/sequence.o objc/io.o
+BASE_OBJC = objc/sequence.o objc/io.o objc/kmodes_common.o
 OBJC = objc/main.o ${BASE_OBJC}
 # sour/opt/intel/bin/compilervars.sh intel64
 all: kmodes kmodes_cuda kmodes_mpi kmodes_openmp
@@ -39,7 +39,7 @@ kmodes_openmp: kmodes power
 	${ICC} -c src/$@.c -qopt-report -fopenmp $(COMPILE_FLAGS) objc/$@.o
 	${ICC} -c src/sequence.c $(COMPILE_FLAGS) objc/sequence_icc.o
 	${ICC} -fopenmp objc/power.o objc/$@.o objc/sequence_icc.o objc/io.o objc/main.o -o bin/kmodes-openmp
-kmodes: create_objc_dir main io sequence
+kmodes: create_objc_dir main io sequence kmodes_common
 	${CC} -c src/$@.c ${COMPILE_FLAGS} objc/$@.o
 	${CC} -o bin/kmodes objc/kmodes.o ${OBJC}
 emmc_power:
@@ -52,6 +52,8 @@ sequence:
 	${CC} -c src/$@.c ${COMPILE_FLAGS} objc/$@.o
 io:
 	${CC} -c src/$@.c ${COMPILE_FLAGS} objc/$@.o
+kmodes_common:
+		${CC} -c src/$@.c ${COMPILE_FLAGS} objc/$@.o
 main:
 	${CC} -c src/$@.c ${COMPILE_FLAGS} objc/$@.o
 create_objc_dir:
