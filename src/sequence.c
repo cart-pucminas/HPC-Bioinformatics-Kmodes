@@ -17,7 +17,7 @@
  * g = 0100
  * t = 1000
  */
-__OFFLOAD__MODIFIER__ unsigned char base_for_binary(unsigned char b) {
+unsigned char base_for_binary(unsigned char b) {
   if (b == 0b0001)
   return 'a';
   if (b == 0b0010)
@@ -140,7 +140,6 @@ __OFFLOAD__MODIFIER__ sequence_t copy_sequence(sequence_t seq) {
   sequence_t sequence = { seq.x,seq.y,seq.z };
   return sequence;
 }
-
 
 sequence_t sum_sequence(sequence_t seq1,sequence_t seq2) {
   sequence_t sequence = { seq1.x + seq2.x,seq1.y + seq2.y,seq1.z + seq2.z };

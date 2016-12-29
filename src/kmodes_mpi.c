@@ -88,7 +88,7 @@ kmodes_result_t kmodes(kmodes_input_t input) {
         // bits tmp_centroid[0] is less significative bit from sequence_t
         // bits tmp_centroid[0] = z << 0
         uint64_t mask = 1;
-        if (data[i].z & (mask << j)){
+        if (data[i].z & (mask << j)) {
           tmp_centroid[j]++;
         }
         if (data[i].y & (mask << j)){
@@ -104,21 +104,9 @@ kmodes_result_t kmodes(kmodes_input_t input) {
 
     }
 
-    // AQUI FAZER O REDUCE DO tmp_centroidCount
     MPI_Allreduce(tmp_centroidCount, recv_tmp_centroidCount, clusters * BIT_SIZE_OF(sequence_t) ,MPI_UNSIGNED , MPI_SUM,MPI_COMM_WORLD);
 
-    #if DEBUG
-    for (size_t k=0;k<clusters;k++) {
-      unsigned int *tmp_centroid = &recv_tmp_centroidCount[k * BIT_SIZE_OF(sequence_t)];
-      for (int x=BIT_SIZE_OF(sequence_t)-1;x>=0; x--) {
-        printf("%d",tmp_centroid[x]);
-      }
-      printf("\n");
-    }
-    #endif
-
     sequence_t* local_centroids = (sequence_t*)calloc(clusters,sizeof(sequence_t));
-
 
     for(size_t i = mpi_rank;i < clusters;i+=mpi_size) {
       sequence_t seq = {0,0,0};
@@ -141,10 +129,6 @@ kmodes_result_t kmodes(kmodes_input_t input) {
         seq.z |= (mask << (j));
       }
       local_centroids[i] = seq;
-      #if DEBUG
-      print_sequence(local_centroids[i]);
-      printf("\n");
-      #endif
     }
 
     MPI_Allreduce(local_centroids, centroids, clusters * sizeof(sequence_t) ,MPI_BYTE , MPI_BOR ,MPI_COMM_WORLD);
