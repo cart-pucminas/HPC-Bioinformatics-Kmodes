@@ -88,15 +88,9 @@ kmodes_result_t kmodes(kmodes_input_t input) {
         // bits tmp_centroid[0] is less significative bit from sequence_t
         // bits tmp_centroid[0] = z << 0
         uint64_t mask = 1;
-        if (data[i].z & (mask << j)){
-          tmp_centroid[j]++;
-        }
-        if (data[i].y & (mask << j)){
-          tmp_centroid[SEQ_DIM_BITS_SIZE + j]++;
-        }
-        if (data[i].x & (mask << j)){
-          tmp_centroid[(2 *SEQ_DIM_BITS_SIZE) + j]++;
-        }
+        tmp_centroid[j] += data[i].z & (mask << j));
+        tmp_centroid[SEQ_DIM_BITS_SIZE + j] += data[i].y & (mask << j));
+        tmp_centroid[(2 *SEQ_DIM_BITS_SIZE) + j] += data[i].x & (mask << j));
       }
 
 
