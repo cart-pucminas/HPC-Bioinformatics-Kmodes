@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <sys/time.h>
+
 #include "global.h"
 #include "io.h"
 #include "power.h"
@@ -17,12 +19,16 @@ void execute(char *filename, size_t number_of_clusters) {
   kmodes_input_t input = read_data(filename);
   input.number_of_clusters = number_of_clusters;
 
-  clock_t begin = clock();
+  struct timeval  tv1, tv2;
+  gettimeofday(&tv1, NULL);
+  
   kmodes_result_t result = kmodes(input);
-  clock_t end = clock();
-  double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+  
+  gettimeofday(&tv2, NULL);
+  safe_print("Total time = %f seconds\n",
+         (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 +
+         (double) (tv2.tv_sec - tv1.tv_sec));
 
-  safe_print("Execution time: %f seconds\n\n", time_spent);
   char resultFile[255];
   master_only(sprintf(resultFile, "%s.out", filename));
   master_only(write_nearest_objects(resultFile, input, result));
@@ -65,7 +71,8 @@ int main(int argc,char **argv) {
   size_t number_of_clusters = atoi(argv[2]);
 
   if (argc == 4) {
-    clock_t begin = clock();
+    struct timeval  tv1, tv2;
+    gettimeofday(&tv1, NULL);
 
     for (int i = 1; i < 11; i++ ){
       sprintf(filename,"%s%d",argv[1], i);
@@ -80,9 +87,10 @@ int main(int argc,char **argv) {
       #endif
 
     } // end for
-    clock_t end = clock();
-    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-    safe_print("Total execution time: %f seconds\n\n", time_spent);
+    gettimeofday(&tv2, NULL);
+    safe_print ("Total time = %f seconds\n",
+         (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 +
+         (double) (tv2.tv_sec - tv1.tv_sec));
   } else {
     execute(filename, number_of_clusters);
   }
