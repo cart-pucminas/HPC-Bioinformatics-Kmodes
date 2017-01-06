@@ -37,8 +37,9 @@ kmodes_mpi: kmodes emmc_power
 	${MPIC} -fopenmp $(MPI_FLAGS) -lmpi  ${LINK_FLAGS} -o bin/kmodes-mpi objc/emmc_power.o objc/$@.o objc/main_mpi.o ${BASE_OBJC}
 kmodes_openmp: kmodes power
 	${ICC} -c src/$@.c -qopt-report -fopenmp $(COMPILE_FLAGS) objc/$@.o
+	${ICC} -c src/kmodes_common.c $(COMPILE_FLAGS) objc/kmodes_common_icc.o
 	${ICC} -c src/sequence.c $(COMPILE_FLAGS) objc/sequence_icc.o
-	${ICC} -fopenmp objc/power.o objc/$@.o objc/sequence_icc.o objc/io.o objc/main.o -o bin/kmodes-openmp
+	${ICC} -fopenmp objc/power.o objc/$@.o objc/sequence_icc.o objc/kmodes_common_icc.o objc/io.o objc/main.o -o bin/kmodes-openmp
 kmodes: create_objc_dir main io sequence kmodes_common
 	${CC} -c src/$@.c ${COMPILE_FLAGS} objc/$@.o
 	${CC} -o bin/kmodes objc/kmodes.o ${OBJC}

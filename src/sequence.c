@@ -17,7 +17,7 @@
  * g = 0100
  * t = 1000
  */
-unsigned char base_for_binary(unsigned char b) {
+__OFFLOAD__MODIFIER__ unsigned char base_for_binary(unsigned char b) {
   if (b == 0b0001)
   return 'a';
   if (b == 0b0010)
@@ -129,7 +129,7 @@ __OFFLOAD__MODIFIER__ void print_sequence(sequence_t seq)
   print_binary(&seq.z);
 }
 
-__OFFLOAD__MODIFIER__ int dist_sequence(sequence_t seq1,sequence_t seq2){
+__OFFLOAD__MODIFIER__ int dist_sequence(sequence_t seq1,sequence_t seq2) {
   uint64_t xDiff = seq1.x ^ seq2.x;
   uint64_t yDiff = seq1.y ^ seq2.y;
   uint64_t zDiff = seq1.z ^ seq2.z;

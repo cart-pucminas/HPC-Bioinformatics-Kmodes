@@ -14,4 +14,5 @@ bin/kmodes*
 *.xcworkspacedata
 *.xcuserstate
 *.gch
+*.optrpt
 cmake-build-debug/
