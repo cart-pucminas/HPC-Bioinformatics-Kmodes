@@ -23,7 +23,7 @@
 
 #define BIT_SIZE_OF(x) (sizeof(x) * 8)
 
-#define DEBUG 0
+#define DEBUG 1
 #define BINARY_OUT 0
 
 extern int mpi_rank;

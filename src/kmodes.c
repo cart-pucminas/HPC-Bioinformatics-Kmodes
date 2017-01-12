@@ -106,7 +106,6 @@ kmodes_result_t kmodes(kmodes_input_t input) {
     }
     printf ("%d - delta = %ld\n",pc,delta);
     pc++;
-
   }
   while(delta > 0);
 

@@ -3,10 +3,10 @@
 #include "global.h"
 
 __OFFLOAD__MODIFIER__ void logDistanceFromCluster(sequence_t sequence, int cluster, int distance) {
-  printf("Distance from cluster %d\n", cluster);
-  print_sequence(sequence);
-  printf("\n");
-  printf("Distance =: %d\n\n",distance);
+    printf("Distance from cluster %d\n", cluster);
+    print_sequence(sequence);
+    printf("\n");
+    printf("Distance =: %d\n\n",distance);
 }
 
 __OFFLOAD__MODIFIER__ void logNearestDistance(int nearest, int min_distance) {
