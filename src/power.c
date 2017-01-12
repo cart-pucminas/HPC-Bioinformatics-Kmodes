@@ -5,6 +5,7 @@
  */
 #define _BSD_SOURCE
 #define _XOPEN_SOURCE
+#define _POSIX_C_SOURCE	199309
 #include <time.h>
 #include <unistd.h>
 #include <assert.h>
