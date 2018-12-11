@@ -1,4 +1,4 @@
-#include "kmeans.h"
+#include "kmeans.h" 
 #if defined(ENABLE_OPENMP)
 #include <omp.h>
 #else
