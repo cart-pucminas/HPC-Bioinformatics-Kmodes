@@ -2,6 +2,12 @@ CudaPredTIS
 ===========
 ###For compile and run instructions please look at the [wiki](https://github.com/guitcastro/CudaPredTIS/wiki)
 ===========
+_______________
+Published paper:
+Guilherme Torres Castro, Luis Enrique Zárate, Cristiane Neri Nobre, and Henrique Cota Freitas.
+Journal of Computational Biology. Volume: 26 Issue 5 p.442-456. May 8, 2019.
+http://doi.org/10.1089/cmb.2018.0245
+_______________
 
 ##Abstract.
 Prediction of the translation initiation site is of vital importance in bioinformatics since through this process it is possible to understand the organic formation and metabolic behavior of living organisms. However the computational cost for balancing not TISs sequences, used in algorithms to make predictions of initiation sites is very high. Therefore this paper presents the implementation and evaluation of the k-modes algorithm for CUDA execution on GPUs (Graphics Processing Units). The results indicate that with the implementation of the CUDA-K-modes algorithm has achieved a speedup of 5000 times over the sequential version, without compromising the quality of classification. 
